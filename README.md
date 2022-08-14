@@ -1,18 +1,18 @@
-# arc-plugin-esbuild
+# arc-plugin-file-copy
 
-Bundles arc functions with [esbuild](https://esbuild.github.io/), includes dependencies and tree shakes!
+Copy files into your functions. Works for sandbox and built functions.
 
 > [Arc serverless framework](https://arc.codes) plugin for compiling your functions with ESBuild Bundler
 
 ## Install
 
 ```bash
-npm i --save-dev arc-plugin-esbuild
+npm i --save-dev arc-plugin-file-copy
 ```
 
 ## Usage
 
-After installing add `@plugins` and `@esbuild` pragmas to your `app.arc` file:
+After installing add `@plugins` and `@file-copy` pragmas to your `app.arc` file:
 
 `app.arc`
 
@@ -20,77 +20,44 @@ After installing add `@plugins` and `@esbuild` pragmas to your `app.arc` file:
 @app
 myapp
 
-@esbuild
+@file-copy
+config/config.json config.json
 
 @http
 get /
 
 @plugins
-arc-plugin-esbuild
+arc-plugin-file-copy
 ```
 
 File listing;
 
 ```sh
 myapp/app.arc
+myapp/config.json
 myapp/package.json
 myapp/tsconfig.json
-myapp/src/http/get-index/index.ts
+myapp/src/http/get-index/index.js
 ```
 
-It's also worth ignoring the build artifacts.
+When running sandbox your functions will be able to find your file symlinked, when deploying the symlinks will be shipped as files. Since these are symbolic links file changes are immediate, however changes to your app.arc won't be picked up without a restart.
 
-```gitignore
-#.gitignore
+```sh
+myapp/src/http/get-index/config.json
+```
 
-src/**/*.js
-!src/macros/*.js  # these are not transpiled
-!src/plugins/*.js # these are not transpiled
-.esbuild
+Copy as many files as you like, directories, and give them any new path.
+
+```arc
+@file-copy
+config/settings.json config.json
+config fullconfig
+data.csv data/root.csv
+
 ```
 
 ### Options
 
-This plugin supports the following options under the `@esbuild` pragma:
+The options are simply source and destination. Both are required.
 
-|Option|Description|Example|
-|---|---|---|
-|`buildDirectory`| The directory to write the bundled files to. This directory will be used at deploy-time before bundling your functions for deployment. Defaults to `.esbuild`. |`buildDirectory .esbuild`|
-|`entryFilePattern`|A [glob](https://github.com/isaacs/node-glob#glob-primer) representing the file that should be used as entry point into your bundle. At `arc deploy` time, this pattern will be scoped to each Lambda function's directory before bundling each Lambda separately. At `arc sandbox` time, this pattern will be appended to `src/**/` when setting up the watcher process. If not specified the default will be `index.{ts,tsx}`.|`entryFilePattern index.{ts,tsx}`|
-|`external`| esbuild package externals defaults to `aws-sdk` | `external prisma aws-sdk` |
-
-### Sandbox
-
-Running `arc sandbox` kicks up the local development server Architect provides.
-This plugin hooks into sandbox execution to watch and compile any typescript
-files located under your project's `src/` directory (using the glob
-`./src/**/<entry option || index.ts>`). It will create `index.js` files in each of your arc project's
-Lambda function folders on sandbox startup, and will remove those when sandbox
-shuts down.
-
-It's recommended to gitignore the output js files.
-
-### Deploy
-
-Running `arc deploy` will bundle all functions using esbuild into your
-`buildDirectory`-specified folder instead of `./src`, and use the bundled code when
-deploying your functions to AWS.
-
-## Sample Application
-
-There is a sample application located under `sample-app/`. `cd` into that
-directory, `npm install` and you can run locally via `arc sandbox` or deploy to
-the internet via `arc deploy`.
-
-## ⚠️ Known Issues
-
-### Order of Arc Plugins Matter
-
-**You probably want to list this plugin last under the `@plugins` section of your
-`app.arc` because plugins are executed in the order that they appear in your
-application manifest**. If you run this plugin before another plugin that creates
-Lambdas, then the Lambda function code from the plugin will not be bundled.
-
-### Mixing and Matching JS and TS
-
-Mixing and matching JS and TS index files will work!. The `entryFilePattern` will need to be adjusted to match js files eg `index.{ts,tsx,js,jsx}`
+The source is relative to the .arc file. The destination is relative to the function directory. The target directory structure will be created and a symlink will be created. While the sandbox symlinks will be cleaned up, target directories will not be removed as it is generally not safe.

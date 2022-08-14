@@ -1,5 +1,5 @@
 @app
-plugin-esbuild-demo
+plugin-file-copy-demo
 
 @http
 get /
@@ -8,16 +8,11 @@ get /hi
 @events
 foo
 
-@static
-fingerprint true
-
-@tables
-data
-  dateval *Number
-
 @plugins
-arc-plugin-esbuild
+arc-plugin-file-copy
 
-@esbuild
-external aws-sdk prisma
-buildDirectory .esbuild
+@file-copy
+settings.json settings.json
+settings.json data.json
+data data
+public/app.css files/example.css

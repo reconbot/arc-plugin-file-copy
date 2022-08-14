@@ -1,17 +1,13 @@
 {
-  "name": "arc-plugin-esbuild-demo",
+  "name": "arc-plugin-file-copy-demo",
   "version": "1.0.0",
   "description": "",
   "main": "test.js",
   "dependencies": {
     "@architect/architect": "^10.0.0"
   },
-  "devDependencies": {
-    "typescript": "4.7.4"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Copper Inc.",
   "license": "ISC"
 }

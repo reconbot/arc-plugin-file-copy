@@ -23,7 +23,7 @@ describe('arc-plugin-esbuild', () => {
     await mkdirp(appDir)
     await copy(sampleDir, appDir)
 
-    const appPluginDir = join(appDir, 'node_modules', 'arc-plugin-esbuild')
+    const appPluginDir = join(appDir, 'node_modules', 'arc-plugin-file-copy')
     await mkdirp(appPluginDir)
     await copy(join(__dirname, '..', 'dist'), appPluginDir)
     process.chdir(appDir)
@@ -37,25 +37,25 @@ describe('arc-plugin-esbuild', () => {
     it('parses the arguments', async () => {
       const inventory = await makeInventory({ deployStage: 'production' })
       const arc = inventory.inv._project.arc
-      assert.deepEqual(arc.esbuild, [
-        ['external', 'aws-sdk', 'prisma'],
-        ['buildDirectory', '.esbuild'],
+      assert.deepEqual(arc['file-copy'], [
+        ['settings.json', 'settings.json'],
+        ['settings.json', 'data.json'],
+        ['data', 'data'],
+        ['public/app.css', 'files/example.css'],
       ])
     })
   })
 
-  describe('cloudformation packaging', () => {
+  describe('packaging', () => {
     it('changes the code uri from a `src/` path to a `dist` path', async () => {
       const inventory = await makeInventory({ deployStage: 'production' })
       const arc = inventory.inv._project.arc
-
-      // blows up with "ReferenceError: @architect/package can only be used with a valid deploy stage set"
       const cloudformation = pkg(inventory)
 
       const result = await plugin.deploy.start({ arc, cloudformation, inventory })
       const code = result.Resources.FooEventLambda.Properties.CodeUri
-      const expected = join('.esbuild', 'events', 'foo')
-      assert.include(code, expected)
+      // make sure files are there
+      await plugin.deploy.end({ arc, cloudformation })
     })
   })
 
@@ -69,24 +69,8 @@ describe('arc-plugin-esbuild', () => {
       const arc = inventory.inv._project.arc
 
       await plugin.sandbox.start({ arc, inventory })
-      const jsFiles = await glob('./src/**/*.js', { ignore: './src/**/node_modules/**' })
-      assert.includeMembers(jsFiles, [
-        './src/events/foo/index.js',
-        './src/http/get-hi/index.js',
-        './src/http/get-index/index.js',
-      ])
+
       await plugin.sandbox.end({ arc, inventory })
-      for (const file of jsFiles) {
-        assert.isFalse(fs.existsSync(file))
-      }
-      const sourceFiles = [
-        './src/events/foo/index.ts',
-        './src/http/get-hi/index.tsx',
-        './src/http/get-index/index.ts',
-      ]
-      for (const file of sourceFiles) {
-        assert.isTrue(fs.existsSync(file))
-      }
     })
   })
 })

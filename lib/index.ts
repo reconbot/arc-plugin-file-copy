@@ -1,4 +1,4 @@
-import { ensureDir, lstat, symlink, readlink, unlink as rmLink } from 'fs-extra'
+import { ensureDir, lstat, symlink, readlink, unlink as rmLink, stat } from 'fs-extra'
 import { updater } from '@architect/utils'
 import { dirname, join } from 'path'
 
@@ -15,9 +15,14 @@ const link = async (src: string, dest: string) => {
     if (error.code === 'EINVAL') {
       throw new Error(`Target already exists "${dest}"`)
     }
-    if (error.code !== 'ENOENT') {
+    if (error.code !== 'ENOENT' && error.code !== 'ENOTDIR') {
       throw new Error(`Unknown Error ${error} reading ${dest}`)
     }
+  }
+  try {
+    await stat(src)
+  } catch (error) {
+    throw new Error(`No source file ${src}. Error: ${error}`)
   }
   await ensureDir(dirname(dest))
   logger.status(`Linking ${src} -> ${dest}`)

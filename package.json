@@ -37,7 +37,7 @@
     "@architect/functions": "5.2.3",
     "@architect/inventory": "3.3.2",
     "@architect/package": "8.2.0",
-    "@microsoft/api-extractor": "7.33.4",
+    "@microsoft/api-extractor": "7.33.5",
     "@types/chai": "4.3.3",
     "@types/fs-extra": "9.0.13",
     "@types/glob": "8.0.0",

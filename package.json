@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@architect/functions": "5.3.3",
-    "@architect/inventory": "3.4.1",
+    "@architect/inventory": "3.4.2",
     "@architect/package": "8.4.0",
     "@microsoft/api-extractor": "7.34.2",
     "@types/chai": "4.3.4",

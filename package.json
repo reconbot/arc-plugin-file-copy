@@ -46,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "chai": "4.3.10",
-    "esbuild": "0.19.7",
+    "esbuild": "0.19.8",
     "esbuild-register": "3.5.0",
     "eslint": "8.54.0",
     "glob": "9.3.5",

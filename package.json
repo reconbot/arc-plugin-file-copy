@@ -48,7 +48,7 @@
     "chai": "5.1.0",
     "esbuild": "0.21.1",
     "esbuild-register": "3.5.0",
-    "eslint": "8.57.0",
+    "eslint": "9.2.0",
     "glob": "9.3.5",
     "mocha": "10.4.0",
     "rollup": "2.79.1",

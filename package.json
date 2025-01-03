@@ -51,7 +51,7 @@
     "eslint": "8.57.1",
     "glob": "9.3.5",
     "mocha": "11.0.1",
-    "rollup": "2.79.2",
+    "rollup": "4.29.1",
     "semantic-release": "24.2.1",
     "typescript": "5.7.2"
   },

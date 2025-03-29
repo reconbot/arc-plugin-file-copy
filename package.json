@@ -34,7 +34,7 @@
     "fs-extra": "^10.1.0"
   },
   "devDependencies": {
-    "@architect/functions": "5.4.1",
+    "@architect/functions": "8.1.9",
     "@architect/inventory": "3.4.2",
     "@architect/package": "9.0.4",
     "@microsoft/api-extractor": "7.52.2",

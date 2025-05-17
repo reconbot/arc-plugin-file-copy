@@ -49,7 +49,7 @@
     "esbuild": "0.25.4",
     "esbuild-register": "3.6.0",
     "eslint": "8.57.1",
-    "glob": "9.3.5",
+    "glob": "11.0.2",
     "mocha": "11.3.0",
     "rollup": "2.79.2",
     "semantic-release": "24.2.4",
